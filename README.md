@@ -1,1 +1,1 @@
-# proxy.wasm-spike
+# proxy-wasm-spike
