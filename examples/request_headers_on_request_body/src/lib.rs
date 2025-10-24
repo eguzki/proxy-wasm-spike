@@ -53,15 +53,22 @@ impl HttpContext for HttpBody {
     fn on_http_request_body(&mut self, _body_size: usize, _end_of_stream: bool) -> Action {
         info!("on request body");
 
-        match hostcalls::get_map(MapType::HttpRequestHeaders) {
-            Ok(headers) => {
-                info!("request headers can be read on request body phase 2");
-                for (name, value) in &headers {
-                    info!(
-                        "#from_request_body_phase# {} -> {}: {}",
-                        self.context_id, name, value
-                    );
-                }
+        match hostcalls::get_map_value(MapType::HttpRequestHeaders, "Host") {
+            Ok(header) => {
+                info!(
+                    "#from_request_body_phase# {} -> {}: {:?}",
+                    self.context_id, "Host", header
+                );
+            }
+            Err(_) => info!("request headers cannot be read on request body phase 2"),
+        }
+
+        match hostcalls::get_map_value(MapType::HttpRequestHeaders, "Host") {
+            Ok(header) => {
+                info!(
+                    "#from_request_body_phase# {} -> {}: {:?}",
+                    self.context_id, "Host", header
+                );
             }
             Err(_) => info!("request headers cannot be read on request body phase 2"),
         }
